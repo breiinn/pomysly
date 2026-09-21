@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fall & Winter Date Ideas 🍂❄️</title>
+<!-- Osobny plik styli CSS -->
+<link rel="stylesheet" href="POMYSLY.css">
+<!-- Google Fonts dla przytulnego klimatu -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Klimatyczny pasek nawigacji -->
+<header class="navbar">
+<div class="logo">Warm<span>Cozy</span>Dates 🍁❄️</div>
+<nav>
+<a href="#generator">Losownik Randek</a>
+<a href="#ideas">Baza Pomysłów</a>
+<a href="#add">Dodaj Pomysł</a>
+</nav>
+</header>
+
+<!-- Sekcja Hero -->
+<section class="hero">
+<div class="hero-content">
+<span class="season-badge">Jesień & Zima 2026</span>
+<h1>Pomysły na randki </h1>
+<p>Chce porobic z toba ta zima cos ciekawego wiec zrobilem to zebysmy mogli wpisywac swoje pomysly i jak bd chcieli cos zrobic to mozemy losowac :3</p>
+<a href="#generator" class="btn btn-primary">Wylosuj randkę ✨</a>
+</div>
+</section>
+
+<main class="container">
+
+<!-- 1. INTERAKTYWNY GENERATOR RANDEK -->
+<section id="generator" class="interactive-card">
+<h2>🎲 Generator Randek</h2>
+<p class="subtitle">Tu mozemy losowac</p>
+
+<div class="filter-buttons">
+<button class="filter-btn active" data-category="all">Wszystkie</button>
+<button class="filter-btn" data-category="fall">🍂 Jesienne</button>
+<button class="filter-btn" data-category="winter">❄️ Zimowe</button>
+<button class="filter-btn" data-category="home">🏠 W domu</button>
+<button class="filter-btn" data-category="outdoor">🌲 Na zewnątrz</button>
+</div>
+
+<div class="generator-box">
+<div id="randomResult" class="result-display">
+Tu sie klika cn
+</div>
+<button id="drawBtn" class="btn btn-accent">Wylosuj Pomysł ☕</button>
+</div>
+</section>
+
+<!-- 2. BAZA POMYSŁÓW Z INTEGRACJĄ DLA UŻYTKOWNIKÓW (GŁOSOWANIE) -->
+<section id="ideas" class="ideas-section">
+<h2>❤️ Baza Pomysłów </h2>
+
+
+<div id="ideasList" class="ideas-grid">
+<!-- Karty będą renderowane dynamicznie przez JS -->
+</div>
+</section>
+
+<!-- 3. FORMULARZ DODAWANIA WŁASNEGO POMYŚLE PRZEZ INNYCH -->
+<form id="addIdeaForm" class="idea-form">
+<div class="form-group">
+<label for="ideaTitle">Tytuł pomysłu:</label>
+<input type="text" id="ideaTitle" placeholder="np. Maraton filmowy z gorącą czekoladą" required autocomplete="off">
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label for="ideaSeason">Pora roku:</label>
+<select id="ideaSeason">
+<option value="fall">🍂 Jesień</option>
+<option value="winter">❄️ Zima</option>
+<option value="both">🍂❄️ Obydwie</option>
+</select>
+</div>
+
+<div class="form-group">
+<label for="ideaLocation">Miejsce:</label>
+<select id="ideaLocation">
+<option value="home">🏠 W domu</option>
+<option value="outdoor">🌲 Na zewnątrz</option>
+</select>
+</div>
+</div>
+
+<div class="form-group">
+<label for="ideaDesc">Krótki opis (opcjonalny):</label>
+<textarea id="ideaDesc" rows="3" placeholder="Opisz w paru zdaniach jak zorganizować tę randkę..."></textarea>
+</div>
+
+<button type="submit" class="btn btn-primary btn-block">Wstaw</button>
+</form>
+
+
+</main>
+
+<footer>
+</footer>
+
+<!-- ========================================================== -->
+<!-- JAVASCRIPT BEZPOŚREDNIO W PLIKU HTML -->
+<!-- ========================================================== -->
+ <script>
+// Startowa baza danych pomysłów na randki (bez polubień)
+var dateIdeas = [
+{
+id: 1,
+title: "Pieczenie cynamonek & Gorąca Czekolada",
+season: "fall",
+location: "home",
+desc: "Zróbmy pls cynamonki"
+},
+{
+id: 2,
+title: "Spacer po kato z matcha XDDD",
+season: "fall",
+location: "outdoor"
+},
+{
+id: 3,
+title: "Łyżwy i drwal",
+season: "winter",
+location: "outdoor",
+desc: "Najpierw ogladasz jak sie wydupiam na lodzie potem wpierdalamy drwala"
+}
+];
+
+var selectedCategory = "all";
+
+// Elementy DOM
+var drawBtn = document.getElementById("drawBtn");
+var randomResult = document.getElementById("randomResult");
+var ideasList = document.getElementById("ideasList");
+var filterBtns = document.querySelectorAll(".filter-btn");
+var addIdeaForm = document.getElementById("addIdeaForm");
+
+// Renderowanie kart w bazie
+function renderIdeas() {
+if (!ideasList) return;
+ideasList.innerHTML = "";
+
+var filtered = dateIdeas.filter(function(idea) {
+if (selectedCategory === "all") return true;
+if (selectedCategory === "fall" && (idea.season === "fall" || idea.season === "both")) return true;
+if (selectedCategory === "winter" && (idea.season === "winter" || idea.season === "both")) return true;
+if (selectedCategory === "home" && idea.location === "home") return true;
+if (selectedCategory === "outdoor" && idea.location === "outdoor") return true;
+return false;
+});
+
+if (filtered.length === 0) {
+ideasList.innerHTML = '<p class="no-ideas">Brak pomysłów w tej kategorii. Dodaj swój poniżej!</p>';
+return;
+}
+
+filtered.forEach(function(idea) {
+var card = document.createElement("div");
+card.className = "idea-card";
+
+var seasonBadge = "🍂❄️ Cała zima";
+if (idea.season === "fall") seasonBadge = "🍂 Jesień";
+if (idea.season === "winter") seasonBadge = "❄️ Zima";
+
+var locationBadge = "🌲 Plener";
+if (idea.location === "home") locationBadge = "🏠 Dom";
+
+// Bezpieczne renderowanie opisu tylko gdy istnieje
+var descHTML = "";
+if (idea.desc) {
+descHTML = "<p>" + escapeHTML(idea.desc) + "</p>";
+}
+
+card.innerHTML =
+'<div class="card-badges">' +
+'<span class="badge badge-season">' + seasonBadge + '</span>' +
+'<span class="badge badge-loc">' + locationBadge + '</span>' +
+'</div>' +
+'<h3>' + escapeHTML(idea.title) + '</h3>' +
+descHTML;
+
+ideasList.appendChild(card);
+});
+}
+
+// Losowanie randki
+if (drawBtn) {
+drawBtn.addEventListener("click", function() {
+var pool = dateIdeas.filter(function(idea) {
+if (selectedCategory === "all") return true;
+if (selectedCategory === "fall" && (idea.season === "fall" || idea.season === "both")) return true;
+if (selectedCategory === "winter" && (idea.season === "winter" || idea.season === "both")) return true;
+if (selectedCategory === "home" && idea.location === "home") return true;
+if (selectedCategory === "outdoor" && idea.location === "outdoor") return true;
+return false;
+});
+
+if (pool.length === 0) {
+if (randomResult) randomResult.textContent = "Brak pomysłów dla tego filtra! Wybierz inny filtr.";
+return;
+}
+
+var random = pool[Math.floor(Math.random() * pool.length)];
+var descText = "";
+if (random.desc) {
+descText = "<br><small>" + escapeHTML(random.desc) + "</small>";
+}
+
+if (randomResult) {
+randomResult.classList.add("pop-animation");
+randomResult.innerHTML = "<strong>" + escapeHTML(random.title) + "</strong>" + descText;
+
+setTimeout(function() {
+randomResult.classList.remove("pop-animation");
+}, 300);
+}
+});
+}
+
+// Filtrowanie
+if (filterBtns.length > 0) {
+filterBtns.forEach(function(btn) {
+btn.addEventListener("click", function() {
+filterBtns.forEach(function(b) {
+b.classList.remove("active");
+});
+btn.classList.add("active");
+selectedCategory = btn.dataset.category;
+renderIdeas();
+});
+});
+}
+
+// Dodawanie własnego pomysłu przez formularz
+if (addIdeaForm) {
+addIdeaForm.addEventListener("submit", function(e) {
+e.preventDefault();
+
+var titleInput = document.getElementById("ideaTitle");
+var seasonInput = document.getElementById("ideaSeason");
+var locationInput = document.getElementById("ideaLocation");
+var descInput = document.getElementById("ideaDesc");
+
+var title = titleInput ? titleInput.value.trim() : "";
+var season = seasonInput ? seasonInput.value : "fall";
+var location = locationInput ? locationInput.value : "home";
+var desc = descInput ? descInput.value.trim() : "";
+
+var newIdea = {
+id: Date.now(),
+title: title,
+season: season,
+location: location
+};
+
+if (desc !== "") {
+newIdea.desc = desc;
+}
+
+dateIdeas.unshift(newIdea);
+renderIdeas();
+
+addIdeaForm.reset();
+alert("Twój pomysł został pomyślnie dodany do bazy! 🎉");
+});
+}
+
+// Zabezpieczenie XSS
+function escapeHTML(str) {
+if (!str) return "";
+return str.replace(/[&<>'"]/g, function(tag) {
+return {
+"&": "&amp;",
+"<": "&lt;",
+">": "&gt;",
+"'": "&#39;",
+'"': "&quot;"
+}[tag] || tag;
+});
+}
+
+// Pierwsze wywołanie
+renderIdeas();
+</script>
+</body>
+</html>
+
